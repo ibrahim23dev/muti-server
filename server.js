@@ -13,7 +13,7 @@ const socket = require('socket.io')
 const server = http.createServer(app)
 
 app.use(cors({
-    origin: ['https://multi-com.vercel.app', 'http://localhost:3001'],
+    origin: ['https://multi-com.vercel.app', 'https://eco-shops.vercel.app'],
     credentials: true
 }))
 
@@ -155,7 +155,7 @@ app.use('/api', require('./routes/home/customerAuthRoutes'))
 app.use('/api', require('./routes/dashboard/sellerRoutes'))
 app.use('/api', require('./routes/dashboard/categoryRoutes'))
 app.use('/api', require('./routes/dashboard/productRoutes'))
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (req, res) => res.send('Server is Running'))
 const port = process.env.PORT
 dbConnect()
 server.listen(port, () => console.log(`Server is running on port ${port}!`))
