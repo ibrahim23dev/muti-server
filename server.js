@@ -2,6 +2,7 @@ const express = require('express')
 const {
     dbConnect
 } = require('./utiles/db')
+
 const app = express()
 const cors = require('cors')
 const http = require('http')
@@ -12,10 +13,20 @@ const socket = require('socket.io')
 
 const server = http.createServer(app)
 
+// Enable CORS for all origins globally
+
 app.use(cors({
-    origin: ['https://multi-com.vercel.app', 'https://eco-shops.vercel.app'],
-    credentials: true
-}))
+    origin: (origin, callback) => {
+        callback(null, origin || '*');
+        // Allow all origins dynamically
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
+    credentials: true, // Allow credentials (e.g., cookies, headers)
+    allowedHeaders: ['Content-Type', 'Authorization'] // Allowed headers
+}));
+
+// Handle preflight requests
+app.options('*', cors()); 
 
 const io = socket(server, {
     cors: {
@@ -24,8 +35,10 @@ const io = socket(server, {
     }
 })
 
+
 var allCustomer = []
 var allSeller = []
+
 
 const addUser = (customerId, socketId, userInfo) => {
     const checkUser = allCustomer.some(u => u.customerId === customerId)
@@ -115,7 +128,6 @@ io.on('connection', (soc) => {
             soc.to(seller.socketId).emit('receved_admin_message', msg)
         }
     })
-
 
     soc.on('send_message_seller_to_admin', msg => {
 
